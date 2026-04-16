@@ -437,6 +437,3 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 
 ---
 
-<p align="center">
-  Built with ❤️ at College of Engineering Guindy, Anna University · Chennai · 2025
-</p>
