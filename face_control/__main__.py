@@ -1,4 +1,4 @@
-"""Entry point — allows `python -m face_control` to start the system."""
+"""Entry point — allows `python -m face_control` to start the system ."""
 
 from .controller import FaceController
 
