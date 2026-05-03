@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CursorEye — MOS Evaluation Form</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ede8;
+    --surface: #ffffff;
+    --surface2: #f7f5f2;
+    --ink: #1a1714;
+    --ink-muted: #6b6560;
+    --accent: #2d5be3;
+    --accent-light: #e8eefb;
+    --border: #ddd9d3;
+    --section-a: #e8f0fb;
+    --section-b: #fdf3e3;
+    --section-c: #e8f7ef;
+    --section-d: #fce8f3;
+    --section-e: #eee8fb;
+    --section-f: #fbeae8;
+    --selected: #2d5be3;
+    --selected-text: #fff;
+    --hover: #f0f4fd;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* ── Header ── */
+  .form-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 52px 40px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(45,91,227,0.18);
+    pointer-events: none;
+  }
+  .form-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .form-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 46px);
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .form-header h1 em {
+    font-style: italic;
+    color: #8fa8f5;
+  }
+  .form-header p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    max-width: 580px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .mos-legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .mos-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 5px 12px;
+  }
+  .mos-legend-item .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Layout ── */
+  .form-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ── Section cards ── */
+  .section-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-top: 28px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .section-header {
+    padding: 20px 28px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 19px;
+    font-weight: 400;
+  }
+  .section-header p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+    font-weight: 300;
+  }
+  .section-questions { padding: 8px 0 16px; }
+
+  /* ── Question ── */
+  .question {
+    padding: 18px 28px;
+    border-bottom: 1px solid #f0ede8;
+  }
+  .question:last-child { border-bottom: none; }
+  .question-label {
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .question-label .qnum {
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .required { color: #e03; }
+
+  /* ── MOS Scale ── */
+  .mos-scale {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mos-option { display: none; }
+  .mos-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    transition: all 0.15s ease;
+    min-width: 68px;
+    text-align: center;
+    user-select: none;
+  }
+  .mos-label:hover {
+    background: var(--hover);
+    border-color: var(--accent);
+  }
+  .mos-option:checked + .mos-label {
+    background: var(--selected);
+    border-color: var(--selected);
+    color: var(--selected-text);
+  }
+  .mos-num {
+    font-size: 22px;
+    font-weight: 600;
+    font-family: 'DM Serif Display', serif;
+    line-height: 1;
+  }
+  .mos-word {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+  }
+
+  /* ── Text area ── */
+  .text-input {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--surface2);
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .text-input:focus { border-color: var(--accent); background: #fff; }
+
+  /* ── Radio/Checkbox ── */
+  .radio-group, .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .radio-opt, .check-opt { display: none; }
+  .radio-lbl, .check-lbl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-lbl:hover, .check-lbl:hover {
+    background: var(--hover);
+    border-color: var(--accent);
+  }
+  .radio-opt:checked + .radio-lbl,
+  .check-opt:checked + .check-lbl {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .radio-marker, .check-marker {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .check-marker { border-radius: 5px; }
+  .radio-opt:checked + .radio-lbl .radio-marker,
+  .check-opt:checked + .check-lbl .check-marker {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .radio-opt:checked + .radio-lbl .radio-marker::after {
+    content: '';
+    width: 6px; height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    display: block;
+  }
+  .check-opt:checked + .check-lbl .check-marker::after {
+    content: '✓';
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* ── Submit ── */
+  .submit-area {
+    padding: 32px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .submit-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .submit-btn:hover { background: #1e47c9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,91,227,0.3); }
+  .submit-note { font-size: 12.5px; color: var(--ink-muted); }
+
+  /* ── Thank you ── */
+  #thankyou {
+    display: none;
+    text-align: center;
+    padding: 80px 20px;
+  }
+  #thankyou .ty-icon { font-size: 56px; margin-bottom: 20px; }
+  #thankyou h2 { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 10px; }
+  #thankyou p { color: var(--ink-muted); font-size: 15px; }
+
+  /* ── Progress bar ── */
+  .progress-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    padding: 10px 20px 0;
+  }
+  .progress-bar-track {
+    background: var(--border);
+    border-radius: 4px;
+    height: 4px;
+    max-width: 760px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    max-width: 760px;
+    margin: 6px auto 0;
+    font-size: 12px;
+    color: var(--ink-muted);
+    text-align: right;
+  }
+
+  /* Section colour accents */
+  .sec-a .section-header { background: var(--section-a); }
+  .sec-a .section-icon { background: #c7d9f8; }
+  .sec-b .section-header { background: var(--section-b); }
+  .sec-b .section-icon { background: #f8e3b0; }
+  .sec-c .section-header { background: var(--section-c); }
+  .sec-c .section-icon { background: #b5e8cb; }
+  .sec-d .section-header { background: var(--section-d); }
+  .sec-d .section-icon { background: #f5c0de; }
+  .sec-e .section-header { background: var(--section-e); }
+  .sec-e .section-icon { background: #d2bff8; }
+  .sec-f .section-header { background: var(--section-f); }
+  .sec-f .section-icon { background: #f8c4bd; }
+
+  @media (max-width: 520px) {
+    .form-header { padding: 36px 20px 32px; }
+    .section-header, .question { padding-left: 18px; padding-right: 18px; }
+    .mos-label { min-width: 54px; padding: 8px 10px; }
+    .mos-num { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
+<div class="form-header">
+  <div class="header-badge">MOS Evaluation · User Study</div>
+  <h1>CursorEye<br><em>Face Control System</em></h1>
+  <p>Thank you for participating in this evaluation. This survey assesses the usability, accuracy, and overall experience of the CursorEye face-gesture-based assistive control system for motor-impaired users.</p>
+  <div class="mos-legend">
+    <div class="mos-legend-item"><span class="dot" style="background:#e03d3d"></span>1 — Bad</div>
+    <div class="mos-legend-item"><span class="dot" style="background:#e07a3d"></span>2 — Poor</div>
+    <div class="mos-legend-item"><span class="dot" style="background:#e0c03d"></span>3 — Fair</div>
+    <div class="mos-legend-item"><span class="dot" style="background:#7abf45"></span>4 — Good</div>
+    <div class="mos-legend-item"><span class="dot" style="background:#2d9e5b"></span>5 — Excellent</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 32 answered</div>
+</div>
+
+<div class="form-body">
+<form id="mosForm" novalidate>
+
+<!-- ══════════════════════════════════════════
+     SECTION 0 — PARTICIPANT BACKGROUND
+══════════════════════════════════════════ -->
+<div class="section-card sec-b">
+  <div class="section-header">
+    <div class="section-icon">👤</div>
+    <div>
+      <h2>Participant Background</h2>
+      <p>Basic information about you</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">1.</span> What is your familiarity with assistive or gaze/face-control technology? <span class="required">*</span></div>
+      <div class="radio-group">
+        <input type="radio" name="q1" id="q1a" class="radio-opt" value="None — first time">
+        <label for="q1a" class="radio-lbl"><span class="radio-marker"></span>None — this is my first time</label>
+        <input type="radio" name="q1" id="q1b" class="radio-opt" value="Heard of it">
+        <label for="q1b" class="radio-lbl"><span class="radio-marker"></span>I have heard of it but never used it</label>
+        <input type="radio" name="q1" id="q1c" class="radio-opt" value="Some experience">
+        <label for="q1c" class="radio-lbl"><span class="radio-marker"></span>Some experience with similar tools</label>
+        <input type="radio" name="q1" id="q1d" class="radio-opt" value="Regular user">
+        <label for="q1d" class="radio-lbl"><span class="radio-marker"></span>Regular user of assistive technology</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">2.</span> How long did you use the CursorEye system during this session? <span class="required">*</span></div>
+      <div class="radio-group">
+        <input type="radio" name="q2" id="q2a" class="radio-opt" value="Under 5 min">
+        <label for="q2a" class="radio-lbl"><span class="radio-marker"></span>Under 5 minutes</label>
+        <input type="radio" name="q2" id="q2b" class="radio-opt" value="5–15 min">
+        <label for="q2b" class="radio-lbl"><span class="radio-marker"></span>5–15 minutes</label>
+        <input type="radio" name="q2" id="q2c" class="radio-opt" value="15–30 min">
+        <label for="q2c" class="radio-lbl"><span class="radio-marker"></span>15–30 minutes</label>
+        <input type="radio" name="q2" id="q2d" class="radio-opt" value="Over 30 min">
+        <label for="q2d" class="radio-lbl"><span class="radio-marker"></span>Over 30 minutes</label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION A — CURSOR CONTROL
+══════════════════════════════════════════ -->
+<div class="section-card sec-a">
+  <div class="section-header">
+    <div class="section-icon">🖱️</div>
+    <div>
+      <h2>A. Cursor Control via Head Movement</h2>
+      <p>Head displacement maps to on-screen cursor movement using nose landmark tracking</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">3.</span> How accurately did the cursor follow your head movements? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q3" id="q3_1" class="mos-option" value="1">
+        <label for="q3_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q3" id="q3_2" class="mos-option" value="2">
+        <label for="q3_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q3" id="q3_3" class="mos-option" value="3">
+        <label for="q3_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q3" id="q3_4" class="mos-option" value="4">
+        <label for="q3_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q3" id="q3_5" class="mos-option" value="5">
+        <label for="q3_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">4.</span> How smooth and stable was the cursor movement (absence of jitter or drift)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q4" id="q4_1" class="mos-option" value="1"><label for="q4_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q4" id="q4_2" class="mos-option" value="2"><label for="q4_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q4" id="q4_3" class="mos-option" value="3"><label for="q4_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q4" id="q4_4" class="mos-option" value="4"><label for="q4_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q4" id="q4_5" class="mos-option" value="5"><label for="q4_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">5.</span> How comfortable was it to control the cursor for an extended period? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q5" id="q5_1" class="mos-option" value="1"><label for="q5_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q5" id="q5_2" class="mos-option" value="2"><label for="q5_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q5" id="q5_3" class="mos-option" value="3"><label for="q5_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q5" id="q5_4" class="mos-option" value="4"><label for="q5_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q5" id="q5_5" class="mos-option" value="5"><label for="q5_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">6.</span> How well did the calibration at startup set up the neutral reference position? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q6" id="q6_1" class="mos-option" value="1"><label for="q6_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q6" id="q6_2" class="mos-option" value="2"><label for="q6_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q6" id="q6_3" class="mos-option" value="3"><label for="q6_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q6" id="q6_4" class="mos-option" value="4"><label for="q6_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q6" id="q6_5" class="mos-option" value="5"><label for="q6_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION B — BLINK CLICKING
+══════════════════════════════════════════ -->
+<div class="section-card sec-c">
+  <div class="section-header">
+    <div class="section-icon">👁️</div>
+    <div>
+      <h2>B. Blink-Based Click Detection</h2>
+      <p>Single, double, and triple blinks detected via Eye Aspect Ratio (EAR)</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">7.</span> How reliably did a single blink register as a left click? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q7" id="q7_1" class="mos-option" value="1"><label for="q7_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q7" id="q7_2" class="mos-option" value="2"><label for="q7_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q7" id="q7_3" class="mos-option" value="3"><label for="q7_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q7" id="q7_4" class="mos-option" value="4"><label for="q7_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q7" id="q7_5" class="mos-option" value="5"><label for="q7_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">8.</span> How accurately did the system distinguish between a single and a double blink? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q8" id="q8_1" class="mos-option" value="1"><label for="q8_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q8" id="q8_2" class="mos-option" value="2"><label for="q8_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q8" id="q8_3" class="mos-option" value="3"><label for="q8_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q8" id="q8_4" class="mos-option" value="4"><label for="q8_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q8" id="q8_5" class="mos-option" value="5"><label for="q8_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">9.</span> How well did triple blink context actions work (e.g., Save in Word, Mute in Zoom)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q9" id="q9_1" class="mos-option" value="1"><label for="q9_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q9" id="q9_2" class="mos-option" value="2"><label for="q9_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q9" id="q9_3" class="mos-option" value="3"><label for="q9_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q9" id="q9_4" class="mos-option" value="4"><label for="q9_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q9" id="q9_5" class="mos-option" value="5"><label for="q9_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">10.</span> Did unintentional blinks cause accidental clicks? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q10" id="q10_1" class="mos-option" value="1"><label for="q10_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Very<br>Often</span></label>
+        <input type="radio" name="q10" id="q10_2" class="mos-option" value="2"><label for="q10_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Often</span></label>
+        <input type="radio" name="q10" id="q10_3" class="mos-option" value="3"><label for="q10_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Sometimes</span></label>
+        <input type="radio" name="q10" id="q10_4" class="mos-option" value="4"><label for="q10_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Rarely</span></label>
+        <input type="radio" name="q10" id="q10_5" class="mos-option" value="5"><label for="q10_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Never</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION C — SCROLLING & NAVIGATION
+══════════════════════════════════════════ -->
+<div class="section-card sec-e">
+  <div class="section-header">
+    <div class="section-icon">↕️</div>
+    <div>
+      <h2>C. Scrolling &amp; Head Tilt Navigation</h2>
+      <p>Eyebrow raise/lower for scroll; head tilt left/right for tabs, slides, and tracks</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">11.</span> How well did raising your eyebrows trigger upward scrolling? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q11" id="q11_1" class="mos-option" value="1"><label for="q11_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q11" id="q11_2" class="mos-option" value="2"><label for="q11_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q11" id="q11_3" class="mos-option" value="3"><label for="q11_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q11" id="q11_4" class="mos-option" value="4"><label for="q11_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q11" id="q11_5" class="mos-option" value="5"><label for="q11_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">12.</span> How well did lowering your eyebrows trigger downward scrolling? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q12" id="q12_1" class="mos-option" value="1"><label for="q12_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q12" id="q12_2" class="mos-option" value="2"><label for="q12_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q12" id="q12_3" class="mos-option" value="3"><label for="q12_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q12" id="q12_4" class="mos-option" value="4"><label for="q12_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q12" id="q12_5" class="mos-option" value="5"><label for="q12_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">13.</span> How reliably did head tilts (left/right) trigger navigation actions (tab switch, slide change, track skip)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q13" id="q13_1" class="mos-option" value="1"><label for="q13_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q13" id="q13_2" class="mos-option" value="2"><label for="q13_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q13" id="q13_3" class="mos-option" value="3"><label for="q13_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q13" id="q13_4" class="mos-option" value="4"><label for="q13_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q13" id="q13_5" class="mos-option" value="5"><label for="q13_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION D — CONTEXT-AWARE SWITCHING
+══════════════════════════════════════════ -->
+<div class="section-card sec-d">
+  <div class="section-header">
+    <div class="section-icon">🔀</div>
+    <div>
+      <h2>D. Context-Aware Application Switching</h2>
+      <p>Automatic detection of active app (Chrome, PDF, Word, YouTube, Zoom, etc.) and gesture remapping</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">14.</span> How accurately did the system detect which application you were using? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q14" id="q14_1" class="mos-option" value="1"><label for="q14_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q14" id="q14_2" class="mos-option" value="2"><label for="q14_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q14" id="q14_3" class="mos-option" value="3"><label for="q14_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q14" id="q14_4" class="mos-option" value="4"><label for="q14_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q14" id="q14_5" class="mos-option" value="5"><label for="q14_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">15.</span> How useful was the context-specific triple blink action (e.g., Save in Word, Mute in Zoom, Zoom Out in PDF)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q15" id="q15_1" class="mos-option" value="1"><label for="q15_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q15" id="q15_2" class="mos-option" value="2"><label for="q15_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q15" id="q15_3" class="mos-option" value="3"><label for="q15_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q15" id="q15_4" class="mos-option" value="4"><label for="q15_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q15" id="q15_5" class="mos-option" value="5"><label for="q15_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">16.</span> How seamless was the transition of gesture behaviour when you switched between applications? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q16" id="q16_1" class="mos-option" value="1"><label for="q16_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q16" id="q16_2" class="mos-option" value="2"><label for="q16_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q16" id="q16_3" class="mos-option" value="3"><label for="q16_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q16" id="q16_4" class="mos-option" value="4"><label for="q16_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q16" id="q16_5" class="mos-option" value="5"><label for="q16_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION E — VIRTUAL KEYBOARD (FSSP)
+══════════════════════════════════════════ -->
+<div class="section-card sec-f">
+  <div class="section-header">
+    <div class="section-icon">⌨️</div>
+    <div>
+      <h2>E. FSSP Virtual Keyboard</h2>
+      <p>Triggered by mouth open ×3 (MAR &gt; 0.45); row/column scanning via head tilt</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">17.</span> How reliably did opening your mouth three times toggle the virtual keyboard? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q17" id="q17_1" class="mos-option" value="1"><label for="q17_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q17" id="q17_2" class="mos-option" value="2"><label for="q17_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q17" id="q17_3" class="mos-option" value="3"><label for="q17_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q17" id="q17_4" class="mos-option" value="4"><label for="q17_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q17" id="q17_5" class="mos-option" value="5"><label for="q17_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">18.</span> How easy was it to select a keyboard row using a head tilt right? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q18" id="q18_1" class="mos-option" value="1"><label for="q18_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q18" id="q18_2" class="mos-option" value="2"><label for="q18_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q18" id="q18_3" class="mos-option" value="3"><label for="q18_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q18" id="q18_4" class="mos-option" value="4"><label for="q18_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q18" id="q18_5" class="mos-option" value="5"><label for="q18_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">19.</span> How comfortable was the overall typing speed using the row-column scanning keyboard? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q19" id="q19_1" class="mos-option" value="1"><label for="q19_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q19" id="q19_2" class="mos-option" value="2"><label for="q19_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q19" id="q19_3" class="mos-option" value="3"><label for="q19_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q19" id="q19_4" class="mos-option" value="4"><label for="q19_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q19" id="q19_5" class="mos-option" value="5"><label for="q19_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">20.</span> How effective was the head tilt left as a cancel/back action within the keyboard? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q20" id="q20_1" class="mos-option" value="1"><label for="q20_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q20" id="q20_2" class="mos-option" value="2"><label for="q20_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q20" id="q20_3" class="mos-option" value="3"><label for="q20_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q20" id="q20_4" class="mos-option" value="4"><label for="q20_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q20" id="q20_5" class="mos-option" value="5"><label for="q20_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION F — SYSTEM CONTROLS
+══════════════════════════════════════════ -->
+<div class="section-card sec-b">
+  <div class="section-header">
+    <div class="section-icon">⚙️</div>
+    <div>
+      <h2>F. System Controls</h2>
+      <p>Freeze/Resume via 6-second eye close; on-screen status HUD</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">21.</span> How reliable was the Freeze/Resume gesture (eyes closed for 6 seconds)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q21" id="q21_1" class="mos-option" value="1"><label for="q21_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q21" id="q21_2" class="mos-option" value="2"><label for="q21_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q21" id="q21_3" class="mos-option" value="3"><label for="q21_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q21" id="q21_4" class="mos-option" value="4"><label for="q21_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q21" id="q21_5" class="mos-option" value="5"><label for="q21_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">22.</span> How informative and clear was the on-screen status display (ACTIVE / PAUSED / mode label)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q22" id="q22_1" class="mos-option" value="1"><label for="q22_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q22" id="q22_2" class="mos-option" value="2"><label for="q22_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q22" id="q22_3" class="mos-option" value="3"><label for="q22_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q22" id="q22_4" class="mos-option" value="4"><label for="q22_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q22" id="q22_5" class="mos-option" value="5"><label for="q22_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">23.</span> How visible and helpful was the freeze progress bar (showing 0–6 s eye-close progress)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q23" id="q23_1" class="mos-option" value="1"><label for="q23_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q23" id="q23_2" class="mos-option" value="2"><label for="q23_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q23" id="q23_3" class="mos-option" value="3"><label for="q23_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q23" id="q23_4" class="mos-option" value="4"><label for="q23_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q23" id="q23_5" class="mos-option" value="5"><label for="q23_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION G — OVERALL USABILITY
+══════════════════════════════════════════ -->
+<div class="section-card sec-a">
+  <div class="section-header">
+    <div class="section-icon">⭐</div>
+    <div>
+      <h2>G. Overall Usability &amp; Experience</h2>
+      <p>Holistic assessment of the system</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">24.</span> How easy was the system to learn and get started with? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q24" id="q24_1" class="mos-option" value="1"><label for="q24_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q24" id="q24_2" class="mos-option" value="2"><label for="q24_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q24" id="q24_3" class="mos-option" value="3"><label for="q24_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q24" id="q24_4" class="mos-option" value="4"><label for="q24_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q24" id="q24_5" class="mos-option" value="5"><label for="q24_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">25.</span> How mentally fatiguing did you find extended use of the system? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q25" id="q25_1" class="mos-option" value="1"><label for="q25_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Very<br>Tiring</span></label>
+        <input type="radio" name="q25" id="q25_2" class="mos-option" value="2"><label for="q25_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Tiring</span></label>
+        <input type="radio" name="q25" id="q25_3" class="mos-option" value="3"><label for="q25_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Moderate</span></label>
+        <input type="radio" name="q25" id="q25_4" class="mos-option" value="4"><label for="q25_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Slight</span></label>
+        <input type="radio" name="q25" id="q25_5" class="mos-option" value="5"><label for="q25_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Not at All</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">26.</span> How physically comfortable was using the system (neck, eye strain)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q26" id="q26_1" class="mos-option" value="1"><label for="q26_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q26" id="q26_2" class="mos-option" value="2"><label for="q26_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q26" id="q26_3" class="mos-option" value="3"><label for="q26_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q26" id="q26_4" class="mos-option" value="4"><label for="q26_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q26" id="q26_5" class="mos-option" value="5"><label for="q26_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">27.</span> How responsive did the system feel overall (low delay between gesture and action)? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q27" id="q27_1" class="mos-option" value="1"><label for="q27_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q27" id="q27_2" class="mos-option" value="2"><label for="q27_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q27" id="q27_3" class="mos-option" value="3"><label for="q27_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q27" id="q27_4" class="mos-option" value="4"><label for="q27_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q27" id="q27_5" class="mos-option" value="5"><label for="q27_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">28.</span> How satisfied are you with CursorEye as a hands-free computer interaction solution? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q28" id="q28_1" class="mos-option" value="1"><label for="q28_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Bad</span></label>
+        <input type="radio" name="q28" id="q28_2" class="mos-option" value="2"><label for="q28_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Poor</span></label>
+        <input type="radio" name="q28" id="q28_3" class="mos-option" value="3"><label for="q28_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Fair</span></label>
+        <input type="radio" name="q28" id="q28_4" class="mos-option" value="4"><label for="q28_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Good</span></label>
+        <input type="radio" name="q28" id="q28_5" class="mos-option" value="5"><label for="q28_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Excellent</span></label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">29.</span> How likely are you to recommend CursorEye to someone who needs hands-free computer access? <span class="required">*</span></div>
+      <div class="mos-scale">
+        <input type="radio" name="q29" id="q29_1" class="mos-option" value="1"><label for="q29_1" class="mos-label"><span class="mos-num">1</span><span class="mos-word">Not at All</span></label>
+        <input type="radio" name="q29" id="q29_2" class="mos-option" value="2"><label for="q29_2" class="mos-label"><span class="mos-num">2</span><span class="mos-word">Unlikely</span></label>
+        <input type="radio" name="q29" id="q29_3" class="mos-option" value="3"><label for="q29_3" class="mos-label"><span class="mos-num">3</span><span class="mos-word">Neutral</span></label>
+        <input type="radio" name="q29" id="q29_4" class="mos-option" value="4"><label for="q29_4" class="mos-label"><span class="mos-num">4</span><span class="mos-word">Likely</span></label>
+        <input type="radio" name="q29" id="q29_5" class="mos-option" value="5"><label for="q29_5" class="mos-label"><span class="mos-num">5</span><span class="mos-word">Definitely</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION H — OPEN FEEDBACK
+══════════════════════════════════════════ -->
+<div class="section-card sec-c">
+  <div class="section-header">
+    <div class="section-icon">💬</div>
+    <div>
+      <h2>H. Open Feedback</h2>
+      <p>Your qualitative insights are valuable for improving the system</p>
+    </div>
+  </div>
+  <div class="section-questions">
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">30.</span> Which gesture or feature did you find most useful?</div>
+      <textarea class="text-input" name="q30" placeholder="e.g. Head tilt for tab switching, blink clicking…" rows="3"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">31.</span> Which gesture or feature caused the most difficulty or frustration?</div>
+      <textarea class="text-input" name="q31" placeholder="e.g. Triple blink was hard to trigger intentionally…" rows="3"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="question-label"><span class="qnum">32.</span> Any additional suggestions for improving CursorEye?</div>
+      <textarea class="text-input" name="q32" placeholder="Suggestions, missing features, improvements…" rows="4"></textarea>
+    </div>
+
+  </div>
+</div>
+
+<!-- Submit -->
+<div class="submit-area">
+  <button type="submit" class="submit-btn">Submit Evaluation</button>
+  <span class="submit-note"><span class="required">*</span> Required questions must be answered before submitting.</span>
+</div>
+
+</form>
+
+<!-- Thank you screen -->
+<div id="thankyou">
+  <div class="ty-icon">🎉</div>
+  <h2>Thank you for your feedback!</h2>
+  <p>Your responses have been recorded. Your input helps improve CursorEye for motor-impaired users.</p>
+  <div style="margin-top:30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+    <button id="btnDownload" class="submit-btn" style="background:#2d9e5b;">⬇ Download Responses</button>
+    <button id="btnEmail" class="submit-btn" style="background:#e07a3d;">✉ Send via Email</button>
+  </div>
+  <p id="sheetsStatus" style="margin-top:16px; font-size:13px; color:var(--ink-muted);"></p>
+</div>
+
+</div><!-- end form-body -->
+
+<script>
+  /* ═══════════════════════════════════════════════════
+     CONFIGURATION — Edit these values for your setup
+  ═══════════════════════════════════════════════════ */
+  const CONFIG = {
+    // Your email address — used for the "Send via Email" button
+    recipientEmail: 'bagiyavenugopal007@example.com',
+
+    // Google Apps Script Web App URL (see instructions below)
+    // Leave blank to skip Google Sheets integration
+    googleSheetsUrl: 'https://script.google.com/macros/s/AKfycbwtbijKK2S1XZaAQHk5_rU08slVFMbR1iHiUOtkCsr4XISAUKemKxu1osFZ2R8KmeC0Mw/exec',
+  };
+
+  /* ─── Question labels (for CSV / email) ─── */
+  const Q_LABELS = {
+    q1:  'Familiarity with assistive tech',
+    q2:  'Session duration',
+    q3:  'Cursor accuracy',
+    q4:  'Cursor smoothness/stability',
+    q5:  'Cursor comfort (extended use)',
+    q6:  'Calibration quality',
+    q7:  'Single blink → left click reliability',
+    q8:  'Single vs double blink distinction',
+    q9:  'Triple blink context actions',
+    q10: 'Accidental clicks from unintentional blinks',
+    q11: 'Eyebrow raise → scroll up',
+    q12: 'Eyebrow lower → scroll down',
+    q13: 'Head tilt → navigation actions',
+    q14: 'App detection accuracy',
+    q15: 'Context-specific triple blink usefulness',
+    q16: 'App-switch gesture transition',
+    q17: 'Mouth open ×3 → keyboard toggle',
+    q18: 'Head tilt right → row select',
+    q19: 'Keyboard typing speed comfort',
+    q20: 'Head tilt left → cancel/back',
+    q21: 'Freeze/Resume reliability',
+    q22: 'On-screen status display clarity',
+    q23: 'Freeze progress bar visibility',
+    q24: 'Ease of learning',
+    q25: 'Mental fatigue',
+    q26: 'Physical comfort (neck/eye strain)',
+    q27: 'System responsiveness',
+    q28: 'Overall satisfaction',
+    q29: 'Likelihood to recommend',
+    q30: 'Most useful gesture/feature',
+    q31: 'Most difficult gesture/feature',
+    q32: 'Additional suggestions',
+  };
+
+  const TOTAL_REQUIRED = 29;
+  let collectedData = null; // stored after submit
+
+  /* ─── Progress tracking ─── */
+  function countAnswered() {
+    const names = new Set();
+    document.querySelectorAll('input[type=radio]:checked').forEach(r => names.add(r.name));
+    return names.size;
+  }
+
+  function updateProgress() {
+    const answered = countAnswered();
+    const pct = Math.round((answered / TOTAL_REQUIRED) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = answered + ' of ' + TOTAL_REQUIRED + ' answered';
+  }
+
+  document.querySelectorAll('input[type=radio]').forEach(r => {
+    r.addEventListener('change', updateProgress);
+  });
+
+  /* ─── Collect all form data ─── */
+  function collectResponses() {
+    const data = {};
+    const ts = new Date().toISOString();
+    data['timestamp'] = ts;
+
+    // Radio questions (q1–q29)
+    for (let i = 1; i <= 29; i++) {
+      const name = 'q' + i;
+      const checked = document.querySelector('input[name="' + name + '"]:checked');
+      data[name] = checked ? checked.value : '';
+    }
+    // Text questions (q30–q32)
+    for (let i = 30; i <= 32; i++) {
+      const name = 'q' + i;
+      const el = document.querySelector('textarea[name="' + name + '"]');
+      data[name] = el ? el.value.trim() : '';
+    }
+    return data;
+  }
+
+  /* ─── Generate CSV string ─── */
+  function toCSV(data) {
+    let csv = 'Question,Label,Response\n';
+    for (const [key, val] of Object.entries(data)) {
+      if (key === 'timestamp') {
+        csv += '"Timestamp","","' + val + '"\n';
+        continue;
+      }
+      const label = Q_LABELS[key] || key;
+      const escaped = String(val).replace(/"/g, '""');
+      csv += '"' + key.toUpperCase() + '","' + label + '","' + escaped + '"\n';
+    }
+    return csv;
+  }
+
+  /* ─── Generate readable text for email ─── */
+  function toText(data) {
+    let txt = 'CursorEye MOS Evaluation Response\n';
+    txt += '═'.repeat(42) + '\n';
+    txt += 'Submitted: ' + data.timestamp + '\n\n';
+    for (const [key, val] of Object.entries(data)) {
+      if (key === 'timestamp') continue;
+      const label = Q_LABELS[key] || key;
+      txt += key.toUpperCase() + ': ' + label + '\n   → ' + (val || '(no answer)') + '\n\n';
+    }
+    return txt;
+  }
+
+  /* ─── Download as CSV file ─── */
+  function downloadCSV(data) {
+    const csv = toCSV(data);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const ts = data.timestamp.replace(/[:.]/g, '-').slice(0, 19);
+    a.href = url;
+    a.download = 'cursoreye_mos_' + ts + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  /* ─── Send via email (mailto:) ─── */
+  function sendEmail(data) {
+    const body = encodeURIComponent(toText(data));
+    const subject = encodeURIComponent('CursorEye MOS Evaluation — ' + data.timestamp);
+    window.location.href = 'mailto:' + CONFIG.recipientEmail + '?subject=' + subject + '&body=' + body;
+  }
+
+  /* ─── Send to Google Sheets ─── */
+  async function sendToGoogleSheets(data) {
+    if (!CONFIG.googleSheetsUrl) return;
+    const statusEl = document.getElementById('sheetsStatus');
+    statusEl.textContent = 'Sending to Google Sheets…';
+    try {
+      await fetch(CONFIG.googleSheetsUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      statusEl.textContent = 'Responses sent to Google Sheets.';
+      statusEl.style.color = '#2d9e5b';
+    } catch (err) {
+      statusEl.textContent = 'Could not reach Google Sheets — please use Download or Email instead.';
+      statusEl.style.color = '#e03d3d';
+    }
+  }
+
+  /* ─── Form submit ─── */
+  document.getElementById('mosForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const answered = countAnswered();
+    if (answered < TOTAL_REQUIRED) {
+      const missing = TOTAL_REQUIRED - answered;
+      alert('Please answer all required questions. ' + missing + ' question(s) still unanswered.');
+      return;
+    }
+
+    collectedData = collectResponses();
+
+    // Auto-download CSV
+    downloadCSV(collectedData);
+
+    // Send to Google Sheets if configured
+    sendToGoogleSheets(collectedData);
+
+    // Show thank-you screen
+    document.getElementById('mosForm').style.display = 'none';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ─── Thank-you screen buttons ─── */
+  document.getElementById('btnDownload').addEventListener('click', function() {
+    if (collectedData) downloadCSV(collectedData);
+  });
+  document.getElementById('btnEmail').addEventListener('click', function() {
+    if (collectedData) sendEmail(collectedData);
+  });
+</script>
+
+</body>
+</html>
